@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.11.9-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg)](https://fastapi.tiangolo.com/)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-red.svg)](https://www.sqlalchemy.org/)
-[![Pytest Coverage](https://img.shields.io/badge/Test_Coverage-94%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Coverage](https://img.shields.io/badge/Test_Coverage-99%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Code Style](https://img.shields.io/badge/Code_Style-Clean_Architecture-black.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 ## 📖 Overview
@@ -30,6 +30,9 @@ The application adheres to a strict separation of concerns through a Clean Layer
 
 ```text
 backend-premium-api-2/
+├── .github/
+│   └── workflows/
+│       └── pytest.yml # CI/CD Automation: Automated testing on push/PR
 ├── app/
 │   ├── api/          # Transport layer: API endpoints, routing & dependency injection
 │   │   ├── v1/       # API Version 1 endpoints (auth, users, items)
@@ -37,8 +40,9 @@ backend-premium-api-2/
 │   ├── core/         # Core infrastructure: configuration, security & DB sessions
 │   ├── models/       # Data layer: SQLAlchemy ORM relational models
 │   ├── schemas/      # Domain layer: Pydantic schemas for request/response validation
-│   └── tests/        # Quality assurance: Integration test suite & Pytest fixtures
+│   └── tests/        # Quality assurance: Integration test suite (test_users, test_items)
 ├── alembic/          # Database revision scripts & migration metadata
+├── Documentación/    # Project documentation and historical logs
 ├── .env              # Environment variables (Private config)
 ├── .env.example      # Environment variables template
 ├── .gitignore        # Version control exclusions
@@ -165,8 +169,8 @@ pytest --cov=app --cov-report=term-missing
 
 ### Coverage Results Highlights:
 ```text
-======================== 11 passed in 6.19s ========================
-TOTAL COVERAGE: 94%
+======================== 16 passed in 9.46s ========================
+TOTAL COVERAGE: 99%
 - Core, Auth, Schemas & Routers: 100% Coverage
-- High-level test validation covering Happy Paths, Bad Credentials, Duplicate Emails, Inactive Users, and RBAC Superuser Permissions.
+- Complete integration test suite covering Happy Paths, Bad Credentials, Duplicate Emails, Inactive Users, and fine-grained RBAC Superuser Permissions across users and items.
 ```
