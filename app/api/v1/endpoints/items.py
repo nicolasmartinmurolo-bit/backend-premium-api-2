@@ -1,8 +1,7 @@
 # ==============================================================================
 # FILE: app/api/v1/endpoints/items.py
-# DESCRIPTION: Item management endpoints (Protected CRUD with JWT).
-# Handles HTTP routes to create and list items linked exclusively to the 
-# authenticated user context.
+# DESCRIPTION: Item management endpoints (Protected CRUD with JWT & RBAC).
+# Handles HTTP routes to create and list items with superuser privilege extensions.
 # ==============================================================================
 
 from typing import List
@@ -26,17 +25,11 @@ def create_item(
 ):
     """
     Create a new item associated automatically with the currently authenticated user.
-    - **item_in**: Pydantic payload containing title and description.
-    - **db**: Active database session injection.
-    - **current_user**: Validated user model extracted from JWT token.
     """
-    # Unpack validated Pydantic model data and inject the owner's foreign key reference
     db_item = ItemModel(**item_in.model_dump(), owner_id=current_user.id)
-    
     db.add(db_item)
     db.commit()
-    db.refresh(db_item)  # Refresh to retrieve database-generated fields (id, timestamps)
-    
+    db.refresh(db_item)
     return db_item
 
 
@@ -48,15 +41,20 @@ def read_items(
     current_user: UserModel = Depends(get_current_user),
 ):
     """
-    Retrieve a paginated list of items belonging exclusively to the authenticated user.
-    - **skip**: Offset for pagination (default: 0).
-    - **limit**: Maximum number of records to return (default: 100).
+    Retrieve a paginated list of items.
+    - If user is a superuser: Returns ALL items in the database.
+    - If user is a regular user: Returns ONLY items belonging to the authenticated user.
     """
-    items = (
-        db.query(ItemModel)
-        .filter(ItemModel.owner_id == current_user.id)
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
+    if current_user.is_superuser:
+        # Superuser role bypasses tenant isolation to inspect all system items
+        items = db.query(ItemModel).offset(skip).limit(limit).all()
+    else:
+        # Regular user strict data isolation
+        items = (
+            db.query(ItemModel)
+            .filter(ItemModel.owner_id == current_user.id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     return items

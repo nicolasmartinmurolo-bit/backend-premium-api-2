@@ -114,3 +114,50 @@ def test_read_items_pagination_and_isolation(client):
     paginated_data = res_paginated.json()
     assert len(paginated_data) == 1
     assert paginated_data[0]["title"] == "User A Item 2"
+
+def test_read_items_as_superuser(client):
+    """
+    Test that a superuser can retrieve all items across different users,
+    whereas regular users are restricted to their own items.
+    Expected: Superuser sees global items; regular user sees only personal items.
+    """
+    # 1. Create Regular User A and an Item
+    client.post("/api/v1/users/", json={"email": "regular_item_user@example.com", "password": "password123"})
+    token_regular = client.post(
+        "/api/v1/auth/login/access-token",
+        data={"username": "regular_item_user@example.com", "password": "password123"}
+    ).json()["access_token"]
+    
+    client.post(
+        "/api/v1/items/",
+        headers={"Authorization": f"Bearer {token_regular}"},
+        json={"title": "Regular Item", "description": "Owned by regular user"}
+    )
+
+    # 2. Create Superuser and an Item
+    client.post("/api/v1/users/", json={
+        "email": "superuser_item@example.com",
+        "password": "password123",
+        "is_superuser": True
+    })
+    token_superuser = client.post(
+        "/api/v1/auth/login/access-token",
+        data={"username": "superuser_item@example.com", "password": "password123"}
+    ).json()["access_token"]
+    
+    client.post(
+        "/api/v1/items/",
+        headers={"Authorization": f"Bearer {token_superuser}"},
+        json={"title": "Superuser Item", "description": "Owned by admin"}
+    )
+
+    # 3. Regular user should only see their own 1 item
+    res_regular = client.get("/api/v1/items/", headers={"Authorization": f"Bearer {token_regular}"})
+    assert res_regular.status_code == status.HTTP_200_OK
+    assert len(res_regular.json()) == 1
+    assert res_regular.json()[0]["title"] == "Regular Item"
+
+    # 4. Superuser should see ALL items in the system (2 items total)
+    res_super = client.get("/api/v1/items/", headers={"Authorization": f"Bearer {token_superuser}"})
+    assert res_super.status_code == status.HTTP_200_OK
+    assert len(res_super.json()() if callable(res_super.json()) else res_super.json()) == 2
