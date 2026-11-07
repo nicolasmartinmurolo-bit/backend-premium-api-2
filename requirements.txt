@@ -1,0 +1,47 @@
+# ==============================================================================
+# PRODUCTION-GRADE DEPENDENCY MANIFEST (requirements.txt)
+# Project: Premium Backend API
+# Architecture: Clean Layered Architecture & Enterprise Best Practices
+# ------------------------------------------------------------------------------
+# ARCHITECTURAL HIGHLIGHTS & SENIOR DECISIONS:
+# 1. Dependency Pruning: Removed 'passlib' due to unmaintained status and 
+#    breaking compatibility with modern 'bcrypt' versions (AttributeError).
+# 2. Strict Type Safety: Pydantic v2 utilized for robust environment validation 
+#    enforcing a 'Fail Fast' pattern if critical config (SECRET_KEY, DATABASE_URL) is missing.
+# 3. Resilient Database Layer: SQLAlchemy 2.0 configured with advanced connection 
+#    pooling parameters (e.g., pool_pre_ping) to handle network glitches gracefully.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. CORE WEB FRAMEWORK & SERVER
+# ------------------------------------------------------------------------------
+fastapi>=0.110.0          # High-performance web framework for building APIs with Python type hints.
+uvicorn>=0.28.0           # Lightning-fast ASGI server implementation used to run FastAPI.
+
+# ------------------------------------------------------------------------------
+# 2. DATA VALIDATION & SETTINGS MANAGEMENT
+# ------------------------------------------------------------------------------
+pydantic>=2.6.4           # Data parsing and runtime validation using Python type annotations (v2).
+pydantic-settings>=2.2.1  # Manages application environment variables robustly using BaseSettings.
+email-validator>=2.1.0    # Required by Pydantic's EmailStr for strict email syntax validation.
+
+# ------------------------------------------------------------------------------
+# 3. DATABASE & MIGRATIONS (SQL_ALCHEMY 2.0 & POSTGRESQL)
+# ------------------------------------------------------------------------------
+sqlalchemy>=2.0.27        # Industry-standard SQL toolkit and ORM for Python database interactions.
+psycopg2-binary>=2.9.9    # PostgreSQL database adapter for Python (binary distribution for easy setup).
+alembic>=1.13.1           # Lightweight database migration tool for SQLAlchemy schema versioning.
+
+# ------------------------------------------------------------------------------
+# 4. SECURITY & AUTHENTICATION (JWT & HASHING DECISIONS)
+# ------------------------------------------------------------------------------
+bcrypt>=4.1.0             # Modern cryptographic hashing library for secure password encryption.
+python-multipart>=0.0.9   # Required for parsing form data (essential for OAuth2 login endpoints).
+python-jose[cryptography]>=3.3.0 # Implements JSON Web Tokens (JWT) for stateless authentication.
+
+# ------------------------------------------------------------------------------
+# 5. TESTING & QUALITY ASSURANCE (TEST SUITE)
+# ------------------------------------------------------------------------------
+pytest>=8.0.0             # Robust testing framework for writing unit and integration tests.
+httpx>=0.26.0             # Fully featured asynchronous HTTP client, used by FastAPI's TestClient.
+pytest-cov>=4.1.0         # Plugin for measuring code coverage percentages during test suites.

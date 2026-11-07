@@ -1,0 +1,1614 @@
+
+
+================================================================================
+ARCHIVO: .\.env
+================================================================================
+
+# ==============================================================================
+# ENVIRONMENT VARIABLES CONFIGURATION (.env)
+# Project: Premium Backend API (Version 2 - Parallel Environment)
+# Architecture: Clean Configuration & Twelve-Factor App Methodology
+# SECURITY WARNING: Never commit this file to version control (Git). Keep it private.
+# ==============================================================================
+
+# --- GENERAL PROJECT METADATA ---
+PROJECT_NAME="Premium Backend API (v2)"
+
+# --- DATABASE CONNECTION PARAMETERS (Docker Port Mapping) ---
+POSTGRES_SERVER=localhost
+POSTGRES_PORT=5433               # External port on your host machine (mapped from Docker -p 5433:5432)
+POSTGRES_CONTAINER_PORT=5432     # Internal port where PostgreSQL runs inside the container
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=backend_db_v2
+
+# --- SECURITY & JWT AUTHENTICATION ---
+# Secret cryptographic key used to sign and verify JSON Web Tokens (JWT) generated via 'secrets.token_urlsafe(32)'.
+# python -c "import secrets; print(secrets.token_urlsafe(32))"
+SECRET_KEY="RcBzKQ0TxYtHqx_bdocTDoP9jNTLALz7pWPOu5yawTw"
+
+# Cryptographic algorithm used for token encryption.
+ALGORITHM="HS256"
+
+# Token expiration lifetime in minutes before requiring re-authentication.
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+================================================================================
+ARCHIVO: .\alembic.ini
+================================================================================
+
+# A generic, single database configuration.
+
+[alembic]
+# path to migration scripts.
+# this is typically a path given in POSIX (e.g. forward slashes)
+# format, relative to the token %(here)s which refers to the location of this
+# ini file
+script_location = %(here)s/alembic
+
+# template used to generate migration file names; The default value is %%(rev)s_%%(slug)s
+# Uncomment the line below if you want the files to be prepended with date and time
+# see https://alembic.sqlalchemy.org/en/latest/tutorial.html#editing-the-ini-file
+# for all available tokens
+# file_template = %%(year)d_%%(month).2d_%%(day).2d_%%(hour).2d%%(minute).2d-%%(rev)s_%%(slug)s
+# Or organize into date-based subdirectories (requires recursive_version_locations = true)
+# file_template = %%(year)d/%%(month).2d/%%(day).2d_%%(hour).2d%%(minute).2d_%%(second).2d_%%(rev)s_%%(slug)s
+
+# sys.path path, will be prepended to sys.path if present.
+# defaults to the current working directory.  for multiple paths, the path separator
+# is defined by "path_separator" below.
+prepend_sys_path = .
+
+
+# timezone to use when rendering the date within the migration file
+# as well as the filename.
+# If specified, requires the tzdata library which can be installed by adding
+# `alembic[tz]` to the pip requirements.
+# string value is passed to ZoneInfo()
+# leave blank for localtime
+# timezone =
+
+# max length of characters to apply to the "slug" field
+# truncate_slug_length = 40
+
+# set to 'true' to run the environment during
+# the 'revision' command, regardless of autogenerate
+# revision_environment = false
+
+# set to 'true' to allow .pyc and .pyo files without
+# a source .py file to be detected as revisions in the
+# versions/ directory
+# sourceless = false
+
+# version location specification; This defaults
+# to <script_location>/versions.  When using multiple version
+# directories, initial revisions must be specified with --version-path.
+# The path separator used here should be the separator specified by "path_separator"
+# below.
+# version_locations = %(here)s/bar:%(here)s/bat:%(here)s/alembic/versions
+
+# path_separator; This indicates what character is used to split lists of file
+# paths, including version_locations and prepend_sys_path within configparser
+# files such as alembic.ini.
+# The default rendered in new alembic.ini files is "os", which uses os.pathsep
+# to provide os-dependent path splitting.
+#
+# Note that in order to support legacy alembic.ini files, this default does NOT
+# take place if path_separator is not present in alembic.ini.  If this
+# option is omitted entirely, fallback logic is as follows:
+#
+# 1. Parsing of the version_locations option falls back to using the legacy
+#    "version_path_separator" key, which if absent then falls back to the legacy
+#    behavior of splitting on spaces and/or commas.
+# 2. Parsing of the prepend_sys_path option falls back to the legacy
+#    behavior of splitting on spaces, commas, or colons.
+#
+# Valid values for path_separator are:
+#
+# path_separator = :
+# path_separator = ;
+# path_separator = space
+# path_separator = newline
+#
+# Use os.pathsep. Default configuration used for new projects.
+path_separator = os
+
+# set to 'true' to search source files recursively
+# in each "version_locations" directory
+# new in Alembic version 1.10
+# recursive_version_locations = false
+
+# the output encoding used when revision files
+# are written from script.py.mako
+# output_encoding = utf-8
+
+# database URL.  This is consumed by the user-maintained env.py script only.
+# other means of configuring database URLs may be customized within the env.py
+# file.
+# sqlalchemy.url = driver://user:pass@localhost/dbname
+
+
+[post_write_hooks]
+# post_write_hooks defines scripts or Python functions that are run
+# on newly generated revision scripts.  See the documentation for further
+# detail and examples
+
+# format using "black" - use the console_scripts runner, against the "black" entrypoint
+# hooks = black
+# black.type = console_scripts
+# black.entrypoint = black
+# black.options = -l 79 REVISION_SCRIPT_FILENAME
+
+# lint with attempts to fix using "ruff" - use the module runner, against the "ruff" module
+# hooks = ruff
+# ruff.type = module
+# ruff.module = ruff
+# ruff.options = check --fix REVISION_SCRIPT_FILENAME
+
+# Alternatively, use the exec runner to execute a binary found on your PATH
+# hooks = ruff
+# ruff.type = exec
+# ruff.executable = ruff
+# ruff.options = check --fix REVISION_SCRIPT_FILENAME
+
+# Logging configuration.  This is also consumed by the user-maintained
+# env.py script only.
+[loggers]
+keys = root,sqlalchemy,alembic
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = WARNING
+handlers = console
+qualname =
+
+[logger_sqlalchemy]
+level = WARNING
+handlers =
+qualname = sqlalchemy.engine
+
+[logger_alembic]
+level = INFO
+handlers =
+qualname = alembic
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(levelname)-5.5s [%(name)s] %(message)s
+datefmt = %H:%M:%S
+
+
+================================================================================
+ARCHIVO: .\create_structure.py
+================================================================================
+
+import os
+from pathlib import Path
+
+# Definimos la lista de directorios y archivos que componen nuestra arquitectura limpia
+# Clean Layered Architecture structure definition
+STRUCTURE = [
+    "app/__init__.py",
+    "app/api/__init__.py",
+    "app/api/deps.py",
+    "app/api/v1/__init__.py",
+    "app/api/v1/api.py",
+    "app/api/v1/endpoints/__init__.py",
+    "app/api/v1/endpoints/auth.py",
+    "app/api/v1/endpoints/users.py",
+    "app/api/v1/endpoints/items.py",
+    "app/core/__init__.py",
+    "app/core/config.py",
+    "app/core/database.py",
+    "app/core/security.py",
+    "app/models/__init__.py",
+    "app/models/base.py",
+    "app/models/user.py",
+    "app/models/item.py",
+    "app/schemas/__init__.py",
+    "app/schemas/token.py",
+    "app/schemas/user.py",
+    "app/schemas/item.py",
+    "app/tests/__init__.py",
+    "app/tests/conftest.py",
+    "app/tests/test_users.py",
+    ".env",
+    "requirements.txt",
+    "README.md"
+]
+
+def create_project_structure():
+    print("🚀 Iniciando la creación automática de la estructura del proyecto...")
+    
+    for file_path_str in STRUCTURE:
+        file_path = Path(file_path_str)
+        
+        # Crear los directorios padres si no existen
+        if file_path.parent != Path(""):
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            
+        # Crear el archivo si no existe (vacío)
+        if not file_path.exists():
+            file_path.touch()
+            print(f"📄 Creado: {file_path}")
+        else:
+            print(f"⚠️ Ya existe (omitido): {file_path}")
+            
+    print("\n✅ ¡Estructura de directorios y archivos generada exitosamente!")
+
+if __name__ == "__main__":
+    create_project_structure()
+
+================================================================================
+ARCHIVO: .\export_project.py
+================================================================================
+
+import os
+
+OUTPUT_FILE = "proyecto_completo.txt"
+VALID_EXTENSIONS = (".py", ".env", ".ini", ".md", ".json", ".txt")
+EXCLUDE_DIRS = {".venv", "__pycache__", ".git", ".pytest_cache", "alembic/versions"}
+
+def export_project():
+    print("Iniciando empaquetado del proyecto...")
+    count = 0
+    with open(OUTPUT_FILE, "w", encoding="utf-8", errors="ignore") as outfile:
+        for root, dirs, files in os.walk("."):
+            # Excluimos carpetas no deseadas modificando dirs in-place
+            dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
+            
+            for file in files:
+                if file.endswith(VALID_EXTENSIONS) and file != OUTPUT_FILE:
+                    file_path = os.path.join(root, file)
+                    print(f"Procesando: {file_path}")
+                    
+                    outfile.write(f"\n\n{'='*80}\n")
+                    outfile.write(f"ARCHIVO: {file_path}\n")
+                    outfile.write(f"{'='*80}\n\n")
+                    
+                    try:
+                        with open(file_path, "r", encoding="utf-8", errors="ignore") as infile:
+                            outfile.write(infile.read())
+                        count += 1
+                    except Exception as e:
+                        outfile.write(f"[Error al leer el archivo: {e}]\n")
+                        
+    print(f"\n¡Éxito total! Se empaquetaron {count} archivos en: {OUTPUT_FILE}")
+
+if __name__ == "__main__":
+    export_project()
+
+================================================================================
+ARCHIVO: .\README.md
+================================================================================
+
+# Premium Backend API
+
+## 🚀 Overview
+This repository contains the version 1 stable core of a production-grade RESTful API built with **FastAPI** and **Python 3.11.9**. It follows a Clean Layered Architecture to ensure separation of concerns, robust security, and maintainability.
+
+## 🛠️ Prerequisites & Tech Stack
+Ensure you have the following installed locally before setting up the project:
+* **Python 3.11.9** (Runtime environment)
+* **Docker Desktop** (For running the PostgreSQL container)
+* **Git** (Version control)
+
+## ⚙️ Quick Start / Local Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd backend-premium-api-2
+Create and activate the virtual environment (Python 3.11.9):
+
+Bash
+py -3.11 -m venv .venv
+# Windows PowerShell execution policy fix (if required):
+# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.venv\Scripts\activate
+Set up PostgreSQL via Docker:
+
+Bash
+docker run --name postgres-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=backend_db -p 5432:5432 -d postgres:15
+Install dependencies:
+
+Python
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+Configure environment variables:
+Create a .env file in the root directory based on the provided configuration template.
+
+📂 Project Architecture
+The project is structured following a Clean Layered Architecture:
+
+Plaintext
+backend-premium-api-2/
+├── app/
+│   ├── api/          # Transport layer & API routers
+│   ├── core/         # Core configurations, database session, & security
+│   ├── models/       # SQLAlchemy ORM database models
+│   ├── schemas/      # Pydantic data validation schemas
+│   └── tests/        # Automated integration tests
+├── .env              # Environment variables (private)
+├── requirements.txt  # Dependencies manifest
+└── README.md         # Project documentation
+
+================================================================================
+ARCHIVO: .\requirements.txt
+================================================================================
+
+# ==============================================================================
+# PRODUCTION-GRADE DEPENDENCY MANIFEST (requirements.txt)
+# Project: Premium Backend API
+# Architecture: Clean Layered Architecture & Enterprise Best Practices
+# ------------------------------------------------------------------------------
+# ARCHITECTURAL HIGHLIGHTS & SENIOR DECISIONS:
+# 1. Dependency Pruning: Removed 'passlib' due to unmaintained status and 
+#    breaking compatibility with modern 'bcrypt' versions (AttributeError).
+# 2. Strict Type Safety: Pydantic v2 utilized for robust environment validation 
+#    enforcing a 'Fail Fast' pattern if critical config (SECRET_KEY, DATABASE_URL) is missing.
+# 3. Resilient Database Layer: SQLAlchemy 2.0 configured with advanced connection 
+#    pooling parameters (e.g., pool_pre_ping) to handle network glitches gracefully.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. CORE WEB FRAMEWORK & SERVER
+# ------------------------------------------------------------------------------
+fastapi>=0.110.0          # High-performance web framework for building APIs with Python type hints.
+uvicorn>=0.28.0           # Lightning-fast ASGI server implementation used to run FastAPI.
+
+# ------------------------------------------------------------------------------
+# 2. DATA VALIDATION & SETTINGS MANAGEMENT
+# ------------------------------------------------------------------------------
+pydantic>=2.6.4           # Data parsing and runtime validation using Python type annotations (v2).
+pydantic-settings>=2.2.1  # Manages application environment variables robustly using BaseSettings.
+
+# ------------------------------------------------------------------------------
+# 3. DATABASE & MIGRATIONS (SQL_ALCHEMY 2.0 & POSTGRESQL)
+# ------------------------------------------------------------------------------
+sqlalchemy>=2.0.27        # Industry-standard SQL toolkit and ORM for Python database interactions.
+psycopg2-binary>=2.9.9    # PostgreSQL database adapter for Python (binary distribution for easy setup).
+alembic>=1.13.1           # Lightweight database migration tool for SQLAlchemy schema versioning.
+
+# ------------------------------------------------------------------------------
+# 4. SECURITY & AUTHENTICATION (JWT & HASHING DECISIONS)
+# ------------------------------------------------------------------------------
+bcrypt>=4.1.0             # Modern cryptographic hashing library for secure password encryption.
+python-multipart>=0.0.9   # Required for parsing form data (essential for OAuth2 login endpoints).
+python-jose[cryptography]>=3.3.0 # Implements JSON Web Tokens (JWT) for stateless authentication.
+
+# ------------------------------------------------------------------------------
+# 5. TESTING & QUALITY ASSURANCE (TEST SUITE)
+# ------------------------------------------------------------------------------
+pytest>=8.0.0             # Robust testing framework for writing unit and integration tests.
+httpx>=0.26.0             # Fully featured asynchronous HTTP client, used by FastAPI's TestClient.
+pytest-cov>=4.1.0         # Plugin for measuring code coverage percentages during test suites.
+
+================================================================================
+ARCHIVO: .\alembic\env.py
+================================================================================
+
+# ==============================================================================
+# ALEMBIC ENVIRONMENT CONFIGURATION (alembic/env.py)
+# Description: Configures Alembic to read database credentials dynamically from 
+# our Pydantic settings and registers SQLAlchemy models for 'autogenerate' support.
+# ==============================================================================
+
+from logging.config import fileConfig
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+from alembic import context
+
+# 1. Import application settings and declarative Base containing our ORM models
+from app.core.config import settings
+from app.core.database import Base
+
+# Import all models explicitly so Alembic detects them during autogeneration
+from app.models.user import User
+from app.models.item import Item
+
+# This is the Alembic Config object, which provides access to values within alembic.ini
+config = context.config
+
+# Interpret the config file for Python logging if a config file is present
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# 2. Overwrite SQLAlchemy URL in Alembic config with our dynamic Pydantic settings URL
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
+# 3. Set target_metadata for 'autogenerate' support (enables Alembic to detect model changes)
+target_metadata = Base.metadata
+
+def run_migrations_offline() -> None:
+    """
+    Run migrations in 'offline' mode.
+    Outputs SQL statements directly to stdout without executing them on a live engine.
+    """
+    url = config.get_main_option("sqlalchemy.url")
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+def run_migrations_online() -> None:
+    """
+    Run migrations in 'online' mode.
+    Creates an Engine and associates a connection with the transaction context.
+    """
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection, target_metadata=target_metadata
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
+
+================================================================================
+ARCHIVO: .\alembic\versions\a19a9799fcbc_create_users_and_items_tables.py
+================================================================================
+
+"""create users and items tables
+
+Revision ID: a19a9799fcbc
+Revises: 
+Create Date: 2026-11-07 05:18:32.771533
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision: str = 'a19a9799fcbc'
+down_revision: Union[str, Sequence[str], None] = None
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
+
+
+def upgrade() -> None:
+    """Upgrade schema."""
+    # ### commands auto generated by Alembic - please adjust! ###
+    pass
+    # ### end Alembic commands ###
+
+
+def downgrade() -> None:
+    """Downgrade schema."""
+    # ### commands auto generated by Alembic - please adjust! ###
+    pass
+    # ### end Alembic commands ###
+
+
+================================================================================
+ARCHIVO: .\app\main.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/main.py
+# DESCRIPTION: Main FastAPI Application Entrypoint.
+# Initializes the FastAPI app instance, registers global middlewares, 
+# and mounts the API v1 router.
+# ==============================================================================
+
+from fastapi import FastAPI
+from app.api.v1.api import api_router
+from app.core.config import settings
+
+# Initialize FastAPI app with metadata from configuration
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version="1.0.0",
+    description="Production-grade RESTful API built with FastAPI and PostgreSQL."
+)
+
+# Mount the main API router under the v1 prefix
+app.include_router(api_router, prefix="/api/v1")
+
+
+@app.get("/", tags=["Root"])
+def read_root():
+    """Root health-check endpoint to verify API liveness."""
+    return {
+        "status": "healthy",
+        "project": settings.PROJECT_NAME,
+        "message": "Welcome to the Premium Backend API v1 stable core."
+    }
+
+================================================================================
+ARCHIVO: .\app\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\api\deps.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/api/deps.py
+# DESCRIPTION: Shared API dependencies (Dependency Injection pattern).
+# Encapsulates reusable logic such as database session yielding and current 
+# authenticated user resolution via JWT tokens.
+# ==============================================================================
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+
+from app.core.config import settings
+from app.core.database import get_db  # <--- Importamos get_db directamente desde database.py
+from app.models.user import User as UserModel
+
+# OAuth2 scheme definition pointing to the token generation endpoint.
+# This tells FastAPI where clients should send credentials to obtain a token.
+reusable_oauth2 = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/auth/login"
+)
+
+
+def get_current_user(
+    db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)
+) -> UserModel:
+    """
+    Validates the incoming JWT bearer token, extracts the subject (user email/id),
+    and queries the database to return the active user instance.
+    Implements a fail-secure pattern raising 401 Unauthorized if credentials fail.
+    """
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        # Decode the JWT token using our secret key and algorithm
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        user_email: str = payload.get("sub")
+        if user_email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    # Query the user in the database
+    user = db.query(UserModel).filter(UserModel.email == user_email).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    
+    return user
+
+================================================================================
+ARCHIVO: .\app\api\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\api\v1\api.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/api/v1/api.py
+# DESCRIPTION: API Version 1 central router aggregator.
+# Combines individual routers (auth, users, items) into a single API router
+# to be mounted cleanly in the main FastAPI application.
+# ==============================================================================
+
+from fastapi import APIRouter
+from app.api.v1.endpoints import items, users, auth  # (auth se añadirá próximamente)
+
+api_router = APIRouter()
+
+# Register sub-routers with specific prefixes and tags for OpenAPI documentation
+# api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+# api_router.include_router(users.router, prefix="/users", tags=["Users"])
+api_router.include_router(items.router, prefix="/items", tags=["Items"])
+
+================================================================================
+ARCHIVO: .\app\api\v1\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\api\v1\endpoints\auth.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/api/v1/endpoints/auth.py
+# DESCRIPTION: Authentication and Login endpoints (OAuth2 implementation).
+# Handles identity verification and JWT access token generation.
+# ==============================================================================
+
+from datetime import timedelta
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
+from app.core.config import settings
+from app.core.database import get_db
+from app.core.security import verify_password, create_access_token
+from app.models.user import User as UserModel
+from app.schemas.token import Token
+
+router = APIRouter()
+
+
+@router.post("/login/access-token", response_model=Token)
+def login_access_token(
+    db: Session = Depends(get_db),
+    form_data: OAuth2PasswordRequestForm = Depends()
+):
+    """
+    OAuth2 compatible token login endpoint. Verifies user credentials and returns a JWT bearer token.
+    - **form_data.username**: Expected to be the user's email address.
+    - **form_data.password**: Plain text password to verify against hashed database record.
+    """
+    # 1. Query user by email (username field in OAuth2 spec)
+    user = db.query(UserModel).filter(UserModel.email == form_data.username).first()
+    
+    # 2. Validate user existence and password correctness
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password",
+        )
+    
+    # 3. Check if user account is active
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Inactive user account",
+        )
+    
+    # 4. Generate expiration delta and sign JWT access token
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        subject=user.email, expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
+
+================================================================================
+ARCHIVO: .\app\api\v1\endpoints\items.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/api/v1/endpoints/items.py
+# DESCRIPTION: Item management endpoints (Protected CRUD with JWT).
+# Handles HTTP routes to create and list items linked exclusively to the 
+# authenticated user context.
+# ==============================================================================
+
+from typing import List
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_current_user
+from app.core.database import get_db
+from app.models.item import Item as ItemModel
+from app.models.user import User as UserModel
+from app.schemas.item import Item, ItemCreate
+
+router = APIRouter()
+
+
+@router.post("/", response_model=Item, status_code=status.HTTP_201_CREATED)
+def create_item(
+    item_in: ItemCreate,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user),
+):
+    """
+    Create a new item associated automatically with the currently authenticated user.
+    - **item_in**: Pydantic payload containing title and description.
+    - **db**: Active database session injection.
+    - **current_user**: Validated user model extracted from JWT token.
+    """
+    # Unpack validated Pydantic model data and inject the owner's foreign key reference
+    db_item = ItemModel(**item_in.model_dump(), owner_id=current_user.id)
+    
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)  # Refresh to retrieve database-generated fields (id, timestamps)
+    
+    return db_item
+
+
+@router.get("/", response_model=List[Item])
+def read_items(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user),
+):
+    """
+    Retrieve a paginated list of items belonging exclusively to the authenticated user.
+    - **skip**: Offset for pagination (default: 0).
+    - **limit**: Maximum number of records to return (default: 100).
+    """
+    items = (
+        db.query(ItemModel)
+        .filter(ItemModel.owner_id == current_user.id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    return items
+
+================================================================================
+ARCHIVO: .\app\api\v1\endpoints\users.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\api\v1\endpoints\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\core\config.py
+================================================================================
+
+# ==============================================================================
+# APPLICATION CONFIGURATION (app/core/config.py)
+# Description: Centralizes application settings and environment variables validation
+# using Pydantic v2 Settings. Dynamically assembles the DATABASE_URL to avoid 
+# hardcoded ports and enforces 'Fail Fast' validation at startup.
+# ==============================================================================
+
+from pydantic import computed_field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    """
+    Settings class utilizing Pydantic BaseSettings to parse environment variables
+    from the .env file with strict runtime type checking and dynamic assembly.
+    """
+    # Application metadata
+    PROJECT_NAME: str = "Premium Backend API (v2)"
+    API_V1_STR: str = "/api/v1"  # <--- Añadimos esta línea faltante
+    
+    # Database individual parameters (Decoupled configuration)
+    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_PORT: int = 5432
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str
+
+    # Computed field to dynamically assemble SQLAlchemy connection string safely
+    @computed_field
+    @property
+    def DATABASE_URL(self) -> str:
+        """
+        Dynamically constructs the PostgreSQL connection URL using decoupled parameters,
+        preventing hardcoded values and supporting parallel local environments.
+        """
+        return f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+    
+    # Security & JWT configuration
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    # Pydantic v2 configuration to point to our local .env file
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore" # Ignores extra variables present in .env not defined here
+    )
+
+# Instantiate settings to be imported across the application
+settings = Settings()
+
+================================================================================
+ARCHIVO: .\app\core\database.py
+================================================================================
+
+# ==============================================================================
+# DATABASE ENGINE & SESSION SETUP (app/core/database.py)
+# Description: Initializes SQLAlchemy 2.0 engine, session maker, and 
+# declarative base for ORM models.
+# ==============================================================================
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+from app.core.config import settings
+
+# Create the SQLAlchemy engine with production-ready connection parameters
+# pool_pre_ping=True helps handle dropped database connections gracefully
+engine = create_engine(
+    settings.DATABASE_URL,
+    pool_pre_ping=True
+)
+
+# Create a configured "SessionLocal" class to handle database transactions
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+# Base class for our ORM models to inherit from
+Base = declarative_base()
+
+def get_db():
+    """
+    Dependency function that yields a database session per request,
+    ensuring it is safely closed once the request cycle finishes.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+================================================================================
+ARCHIVO: .\app\core\security.py
+================================================================================
+
+"""
+================================================================================
+MODULE: Security, Hashing, and JWT Authentication (app/core/security.py)
+================================================================================
+Description:
+    This module centralizes all cryptographic logic for the application:
+    1. Unidirectional password hashing using the 'bcrypt' library directly 
+       (mitigating compatibility issues found in legacy wrappers).
+    2. Generation, signing, and decoding of JSON Web Tokens (JWT) to enforce 
+       a stateless authentication architecture.
+================================================================================
+"""
+
+from datetime import datetime, timedelta
+from typing import Optional, Union, Any
+from jose import jwt
+import bcrypt
+
+from app.core.config import settings
+
+# ==============================================================================
+# PASSWORD HASHING FUNCTIONS
+# ==============================================================================
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify a plain text password against a securely hashed counterpart.
+    
+    Args:
+        plain_password (str): The raw password provided by the user during login.
+        hashed_password (str): The secure hash stored in the database.
+        
+    Returns:
+        bool: True if passwords match, False otherwise.
+    """
+    # bcrypt requires bytes; encode strings accordingly
+    password_byte_enc = plain_password.encode('utf-8')
+    hashed_password_byte_enc = hashed_password.encode('utf-8')
+    
+    return bcrypt.checkpw(password_byte_enc, hashed_password_byte_enc)
+
+
+def get_password_hash(password: str) -> str:
+    """
+    Generate a secure cryptographic hash from a plain text password using bcrypt.
+    
+    Security Note: 
+    Bcrypt has a native hard limit of 72 bytes maximum. To prevent system errors 
+    or unpredictable behavior with excessively long passwords, we encode the string 
+    to bytes and apply a preventive truncation at the first 72 bytes.
+    
+    Args:
+        password (str): The raw password to be encrypted.
+        
+    Returns:
+        str: The resulting secure hash string ready to be stored in the database.
+    """
+    pwd_bytes = password.encode('utf-8')
+    if len(pwd_bytes) > 72:
+        pwd_bytes = pwd_bytes[:72]
+        
+    # Generate a random salt and hash the password using bcrypt directly
+    hashed_password = bcrypt.hashpw(pwd_bytes, bcrypt.gensalt())
+    
+    return hashed_password.decode('utf-8')
+
+
+# ==============================================================================
+# JSON WEB TOKEN (JWT) FUNCTIONS
+# ==============================================================================
+
+def create_access_token(subject: Union[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+    """
+    Create a signed JSON Web Token (JWT) for stateless user authorization.
+    
+    Args:
+        subject (Union[str, Any]): The unique identifier for the token payload (typically user email/id).
+        expires_delta (Optional[timedelta]): Custom expiration time window. Defaults to system settings.
+        
+    Returns:
+        str: Encoded JWT access token string.
+    """
+    # Handle token expiration calculation with fallback logic:
+    if expires_delta:
+        # Custom expiration scenario: Executed when an explicit argument is passed.
+        # Use Case: Useful for features like "Remember Me" (e.g., 7 days expiration) 
+        # or short-lived tokens like password reset tokens (e.g., 15 minutes).
+        expire = datetime.utcnow() + expires_delta
+    else:
+        # Default expiration scenario: Executed when no custom delta is specified.
+        # Fallbacks automatically to the standard configuration defined in settings 
+        # (settings.ACCESS_TOKEN_EXPIRE_MINUTES, typically 30 minutes for standard logins).
+        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        
+    # Construct the payload dictionary
+    to_encode = {"exp": expire, "sub": str(subject)}
+    
+    # Encode and sign the JWT using the secret key and algorithm defined in settings
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    
+    return encoded_jwt
+
+================================================================================
+ARCHIVO: .\app\core\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\models\base.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/models/base.py
+# DESCRIPTION: SQLAlchemy declarative base configuration.
+# Acts as the central registry for all ORM models to support database migrations.
+# ==============================================================================
+
+from sqlalchemy.orm import declarative_base
+
+# Declarative base class from which all database models will inherit.
+Base = declarative_base()
+
+================================================================================
+ARCHIVO: .\app\models\item.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/models/item.py
+# DESCRIPTION: Item ORM model definition.
+# Maps items to the 'items' table and links them to a specific user owner.
+# ==============================================================================
+
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+from app.models.base import Base
+
+
+class Item(Base):
+    """
+    Database model representing business items owned by users.
+    Enforces data isolation through user foreign keys.
+    """
+    __tablename__ = "items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True, nullable=False)
+    description = Column(String, nullable=True)
+    
+    # Foreign key linking the item to the users table primary key
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    # Back-populates relationship with the User model
+    owner = relationship("User", back_populates="items")
+
+================================================================================
+ARCHIVO: .\app\models\user.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/models/user.py
+# DESCRIPTION: User ORM model definition.
+# Maps the Python class to the 'users' table in PostgreSQL.
+# ==============================================================================
+
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.orm import relationship
+from app.models.base import Base
+
+
+class User(Base):
+    """
+    Database model representing system users.
+    Handles user credentials, status flags, and relationships with business items.
+    """
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+    full_name = Column(String, nullable=True)
+    is_active = Column(Boolean, default=True)
+    is_superuser = Column(Boolean, default=False)
+
+    # Relationship mapping: One user can own multiple items.
+    # cascade="all, delete-orphan" ensures items are cleaned up if the user is deleted.
+    # items = relationship("Item", back_owner="owner", cascade="all, delete-orphan")
+    # Note: In modern SQLAlchemy 2.0+, relationships typically use `back_populates` instead of `back_owner`.
+    items = relationship("Item", back_populates="owner", cascade="all, delete-orphan")
+
+================================================================================
+ARCHIVO: .\app\models\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\schemas\item.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/schemas/item.py
+# DESCRIPTION: Pydantic schemas for Item validation and serialization.
+# Handles incoming data validation (creation/updates) and database model output formatting.
+# ==============================================================================
+
+from typing import Optional
+from pydantic import BaseModel
+
+
+class ItemBase(BaseModel):
+    """Shared base properties for items."""
+    title: str
+    description: Optional[str] = None
+
+
+class ItemCreate(ItemBase):
+    """Properties required to create a new item."""
+    pass
+
+
+class ItemUpdate(ItemBase):
+    """Properties that can be modified during an item update (all optional)."""
+    title: Optional[str] = None
+
+
+class Item(ItemBase):
+    """
+    Properties returned to the client via public API endpoints.
+    Includes database-generated IDs and the foreign key reference to the owner.
+    """
+    id: int
+    owner_id: int
+
+    # Config to allow Pydantic to read data directly from SQLAlchemy ORM models
+    model_config = {"from_attributes": True}
+
+================================================================================
+ARCHIVO: .\app\schemas\token.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/schemas/token.py
+# DESCRIPTION: Pydantic schemas for token and authentication payload validation.
+# ==============================================================================
+
+from typing import Optional
+from pydantic import BaseModel
+
+
+class Token(BaseModel):
+    """Schema representing the JWT access token response structure."""
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    """Schema representing the payload data encoded inside the JWT token."""
+    email: Optional[str] = None
+
+================================================================================
+ARCHIVO: .\app\schemas\user.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/schemas/user.py
+# DESCRIPTION: Pydantic schemas for User validation (Create, Update, Read).
+# ==============================================================================
+
+from typing import Optional
+from pydantic import BaseModel, EmailStr
+
+
+class UserBase(BaseModel):
+    """Shared properties for user schemas."""
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    is_active: Optional[bool] = True
+    is_superuser: Optional[bool] = False
+
+
+class UserCreate(UserBase):
+    """Properties required during user registration (Plain password received)."""
+    email: EmailStr
+    password: str
+
+
+class UserUpdate(UserBase):
+    """Properties that can be modified during a user update."""
+    password: Optional[str] = None
+
+
+class UserInDBBase(UserBase):
+    """
+    Base schema for users stored in database (includes internal IDs).
+    'from_attributes = True' (formerly known as 'orm_mode' in Pydantic V1) 
+    allows Pydantic to read data directly from SQLAlchemy ORM model instances 
+    instead of requiring flat dictionaries, enabling seamless serialization 
+    from database objects to JSON responses.
+    """
+    id: Optional[int] = None
+
+    model_config = {"from_attributes": True}
+
+
+class User(UserInDBBase):
+    """Properties to return via public API endpoints (Password excluded!)."""
+    pass
+
+================================================================================
+ARCHIVO: .\app\schemas\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\app\tests\conftest.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/tests/conftest.py
+# DESCRIPTION: Automated Testing Global Configuration (Pytest Fixtures).
+# Sets up an isolated SQLite in-memory database test environment and 
+# overrides FastAPI dependencies to inject test sessions seamlessly.
+# ==============================================================================
+
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+
+from app.core.database import Base, get_db
+from app.main import app  # (Nota: Asegúrate de tener tu instancia de FastAPI en app/main.py)
+
+# Use SQLite in-memory database for fast, isolated test execution
+SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
+
+# Create SQLite test engine using StaticPool to maintain connection across threads
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+@pytest.fixture(scope="function")
+def db_session():
+    """
+    Fixture that creates a fresh database schema for each test function,
+    yields an active database session, and tears it down afterwards.
+    """
+    Base.metadata.create_all(bind=engine)
+    db = TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture(scope="function")
+def client(db_session):
+    """
+    Fixture that overrides FastAPI's 'get_db' dependency to inject 
+    the SQLite testing session, returning a TestClient instance.
+    """
+    def override_get_db():
+        try:
+            yield db_session
+        finally:
+            pass
+
+    app.dependency_overrides[get_db] = override_get_db
+    with TestClient(app) as c:
+        yield c
+    app.dependency_overrides.clear()
+
+================================================================================
+ARCHIVO: .\app\tests\test_users.py
+================================================================================
+
+# ==============================================================================
+# FILE: app/tests/test_users.py
+# DESCRIPTION: Integration tests for the application root and health check endpoints.
+# ==============================================================================
+
+def test_read_root(client):
+    """
+    Test the root endpoint (GET /) to verify the application liveness 
+    and proper response metadata structure.
+    """
+    response = client.get("/")
+    assert response.status_code == 200
+    data = response.json()
+    assert "status" in data
+    assert data["status"] == "healthy"
+
+================================================================================
+ARCHIVO: .\app\tests\__init__.py
+================================================================================
+
+
+
+================================================================================
+ARCHIVO: .\Documentación\Documentación.md
+================================================================================
+
+## 🛠️ Fase 1: Paso 1 - Configuración Detallada del Entorno (Desde Cero)
+
+### 1\. Control de Versiones de Python y Creación del Entorno con Python 3.11.9
+
+En tu sistema operativo puedes tener varias versiones de Python instaladas. Para asegurarnos de que este proyecto corra específicamente sobre **Python 3.11.9** (aislado de la versión global de tu PC), utilizaremos el comando explícito apuntando a esa versión.
+
+Abre tu terminal (PowerShell o CMD) dentro de la carpeta de tu nuevo proyecto (`backend-premium-api-2`) y ejecuta:
+
+```bash
+# Indicar explícitamente que queremos usar Python 3.11.9 para crear el entorno virtual
+py -3.11 -m venv .venv
+# O alternativamente si usas el ejecutable directo:
+# python3.11 -m venv .venv
+
+```
+
+> \\\*\\\*💡 Tip Senior / Inglés Técnico:\\\*\\\* Especificar versiones exactas de runtime (como `Python 3.11.9`) garantiza la \\\*reproducibilidad\\\* del entorno y evita bugs inesperados por incompatibilidades de sintaxis o librerías nativas (\\\*dependency conflicts\\\*).
+
+\---
+
+### 2\. Permicios de Ejecución en Windows 11 (PowerShell Execution Policy)
+
+Si intentas activar el entorno virtual en PowerShell y te arroja un error rojo diciendo que *los scripts están deshabilitados en este sistema*, se debe a la directiva de seguridad por defecto de Windows 11.
+
+Para solucionarlo de forma segura en tu usuario actual, ejecuta en tu terminal de PowerShell:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+```
+
+* **¿Qué hace esto?** Permite que tu terminal ejecute scripts locales (como el archivo `activate.ps1` de tu entorno virtual) sin comprometer la seguridad global del equipo.
+
+Ahora sí, procede a activar tu entorno virtual:
+
+```powershell
+.venv\\\\Scripts\\\\activate
+
+```
+
+*(Verás que la terminal ahora muestra `(.venv)` a la izquierda, confirmando que estás dentro del entorno aislado).*
+
+\---
+
+### 3\. Verificación de Python y Actualización de Herramientas Base
+
+Estando con el entorno virtual activo, corrobora que estás usando la versión correcta y actualiza el gestor de paquetes (`pip`):
+
+```bash
+# Verificar la versión exacta de Python activa en el entorno
+python --version
+# Debería retornar: Python 3.11.9
+
+# Actualizar pip a la última versión disponible
+python -m pip install --upgrade pip
+
+```
+
+\---
+
+### 4\. Configuración de PostgreSQL en Docker
+
+Para mantener limpio tu sistema operativo, usaremos Docker Desktop para correr nuestra base de datos.
+
+Asegúrate de que Docker esté abierto y ejecuta el siguiente comando para descargar y levantar el contenedor de PostgreSQL 15:
+
+```bash
+docker run --name postgres-db -e POSTGRES\\\_USER=postgres -e POSTGRES\\\_PASSWORD=postgres -e POSTGRES\\\_DB=backend\\\_db -p 5432:5432 -d postgres:15
+
+```
+
+Para verificar que el motor de base de datos está corriendo saludablemente:
+
+```bash
+docker ps
+
+```
+
+\---
+
+### 5\. Creación del Archivo `requirements.txt` y Variables de Entorno (`.env`)
+
+Crea los dos archivos clave en la raíz de tu proyecto:
+
+**`requirements.txt`**
+
+```text
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.4
+pydantic-settings>=2.2.1
+sqlalchemy>=2.0.27
+psycopg2-binary>=2.9.9
+alembic>=1.13.1
+passlib\\\[bcrypt]>=1.7.4
+python-multipart>=0.0.9
+python-jose\\\[cryptography]>=3.3.0
+pytest>=8.0.0
+httpx>=0.26.0
+pytest-cov>=4.1.0
+
+```
+
+**`.env`**
+
+```env
+PROJECT\\\_NAME="Premium Backend API"
+DATABASE\\\_URL="postgresql+psycopg2://postgres:postgres@localhost:5432/backend\\\_db"
+SECRET\\\_KEY="tu\\\_super\\\_secret\\\_key\\\_ultrasecured\\\_change\\\_it\\\_in\\\_production"
+ALGORITHM="HS256"
+ACCESS\\\_TOKEN\\\_EXPIRE\\\_MINUTES=30
+
+```
+
+Instala las dependencias dentro de tu entorno virtual:
+
+```bash
+pip install -r requirements.txt
+
+```
+
+\---
+
+### 📂 Estructura de Carpetas Limpia
+
+Construye manualmente la estructura inicial de directorios en tu proyecto:
+
+```text
+backend-premium-api-2/
+├── app/
+│   ├── api/
+│   │   ├── \\\_\\\_init\\\_\\\_.py
+│   │   ├── deps.py
+│   │   └── v1/
+│   │       ├── \\\_\\\_init\\\_\\\_.py
+│   │       ├── api.py
+│   │       └── endpoints/
+│   │           ├── \\\_\\\_init\\\_\\\_.py
+│   │           ├── auth.py
+│   │           ├── users.py
+│   │           └── items.py
+│   ├── core/
+│   │   ├── \\\_\\\_init\\\_\\\_.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   └── security.py
+│   ├── models/
+│   │   ├── \\\_\\\_init\\\_\\\_.py
+│   │   ├── base.py
+│   │   ├── user.py
+│   │   └── item.py
+│   ├── schemas/
+│   │   ├── \\\_\\\_init\\\_\\\_.py
+│   │   ├── token.py
+│   │   ├── user.py
+│   │   └── item.py
+│   └── tests/
+│       ├── \\\_\\\_init\\\_\\\_.py
+│       ├── conftest.py
+│       └── test\\\_users.py
+├── .env
+├── requirements.txt
+└── README.md
+
+```
+
+\---
+
+### ¿Cómo seguimos?
+
+Tómate el tiempo necesario para replicar esto en tu carpeta `backend-premium-api-2`, verificar que todo levante bien y que el entorno apunte a Python 3.11.9.
+
+**Por favor, avísame cuando hayas completado y validado este Paso 1 en tu máquina para que avancemos juntos al Paso 2** (la creación del núcleo de configuración y conexión a la base de datos).
+
+
+
+================================================================================
+ARCHIVO: .\Documentación\Manejo de errores #01.md
+================================================================================
+
+**¡No te preocupes! Todo está perfecto y bajo control.** No es un error crítico ni un fallo de código, sino una pequeña trampa interactiva del propio gestor de paquetes (`pip`).
+
+### ¿Qué fue lo que pasó? (Explicación técnica para Junior)
+
+1. Cuando ejecutaste `python -m pip install --upgrade pip`, pip detectó que tenías una versión instalada (`24.0`) y encontró una más nueva disponible en PyPI (`26.3`).
+
+
+2. Comenzó a descargar la nueva versión de manera automática.
+
+
+3. Al intentar realizar el reemplazo (*Uninstalling pip-24.0* -> *Successfully uninstalled*), el script de actualización de `pip` en Windows suele abrir un proceso intermedio o esperar un comando del sistema, o bien la terminal interpretó una pausa y se quedó esperando confirmación o input de teclado. Como se quedó "colgado" unos segundos, presuntamente tocaste alguna tecla o cancelaste sin querer, lo que provocó el mensaje: `ERROR: Operation cancelled by user`.
+
+
+
+---
+
+### ¿Cómo lo solucionamos y verificamos?
+
+Para asegurarnos de que tu `pip` quedó en buenas condiciones y no se rompió nada en el entorno virtual, haz lo siguiente en tu terminal:
+
+1. **Verifica el estado actual de pip:**
+```bash
+pip --version
+
+```
+
+
+* **Escenario A:** Te muestra una versión (puede ser la `24.0` porque se canceló justo antes de aplicar la nueva, o la `26.3`). Si te arroja la versión sin errores, **todo está bien**.
+* **Escenario B:** Te da un error de que no encuentra el comando `pip`.
+
+
+2. **Si te da error o quieres dejarlo limpio:**
+Fuerza la instalación de la última versión de manera directa o reinstálala con el siguiente comando seguro:
+```python
+python -m pip install --upgrade pip --no-cache-dir
+
+```
+
+
+
+---
+
+### 💡 Consejo Senior / Inglés Técnico
+
+A este tipo de comportamientos en las terminales los llamamos ***CLI prompts hanging*** o interrupciones de procesos de E/S (*Input/Output*). A veces, actualizar `pip` dentro de un entorno virtual recién creado en Windows da pequeños falsos positivos si la consola de PowerShell intercepcepta los permisos de escritura del ejecutable.
+
+Dime, ¿qué te devolvió al ejecutar `pip --version` ahora? ¿Pudiste reintentar el comando o prefieres que avancemos a comprobar el siguiente punto de la lista (como levantar el contenedor de Docker)? ¡Te leo!
+
+================================================================================
+ARCHIVO: .\Documentación\Manejo de errores #02.md
+================================================================================
+
+¡Excelente pregunta técnica! Como tu mentor, me encanta que anticipes estos escenarios de infraestructura local.
+
+Sí, **habría un conflicto directo** si intentas ejecutar exactamente la misma línea de comandos tal cual está escrita, por dos motivos principales a nivel de Docker:
+
+1. **Conflicto por el nombre del contenedor (`--name postgres-db`):** Docker no permite que existan dos contenedores activos o detenidos con exactamente el mismo nombre en todo tu sistema. Si el proyecto anterior ya usó el nombre `postgres-db`, Docker arrojará un error diciendo que el nombre ya está en uso.
+2. **Conflicto por el puerto (`-p 5432:5432`):** El puerto `5432` de tu máquina física anfitriona ya estaría asociado o reservado por el contenedor anterior si este se encuentra encendido.
+
+---
+
+### ¿Cómo lo resolvemos profesionalmente?
+
+Dado que estás corriendo dos versiones de un proyecto y quieres que convivan sin pisarse, tienes dos opciones excelentes:
+
+#### Opción A: Aislar el nuevo contenedor con otro nombre y puerto (Recomendado para desarrollo paralelo)
+
+Puedes cambiar el nombre del contenedor y el puerto externo para que el proyecto 2 corra en paralelo sin interferir con el proyecto 1:
+
+```bash
+docker run --name postgres-db-v2 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=backend_db_v2 -p 5433:5432 -d postgres:15
+
+```
+
+* **¿Qué cambió aquí?**
+* Le pusimos `--name postgres-db-v2` para distinguirlo del anterior.
+* Cambiamos la base de datos interna a `backend_db_v2`.
+* Mapeamos el puerto externo a `5433:5432` (tu PC escuchará en el puerto 5433 y lo redirigirá al 5432 interno del contenedor).
+* *Nota si usas esta opción:* En tu archivo `.env` del nuevo proyecto, deberás actualizar la URL de conexión apuntando al puerto nuevo: `localhost:5433/backend_db_v2`.
+
+
+
+#### Opción B: Apagar y reciclar el contenedor anterior (Si ya no usarás el proyecto viejo)
+
+Si el proyecto anterior ya cumplió su ciclo y prefieres usar exactamente la misma configuración y el mismo puerto (`5432`), simplemente asegúrate de detener y eliminar el contenedor viejo antes de levantar el nuevo:
+
+```bash
+# Detener el contenedor viejo
+docker stop postgres-db
+
+# Eliminar el contenedor viejo (libera el nombre y los puertos)
+docker rm postgres-db
+
+```
+
+Una vez hecho esto, ya podrías ejecutar tu comando original de la versión 1 sin ningún conflicto.
+
+---
+
+### 💡 Tip Senior / Inglés Técnico
+
+A esta gestión de recursos aislados en entornos de desarrollo se le conoce como ***Container Isolation* e *Port Mapping management***. En arquitecturas limpias, es una excelente práctica utilizar variables en los archivos `.env` (como `DB_PORT=5432`) en lugar de hardcodear los puertos, facilitando cambiar de entorno con solo modificar una línea de configuración.
+
+Dime, ¿cuál de las dos opciones prefieres aplicar para tu base de datos en esta nueva carpeta? ¡Y avísame cuando tengas este punto superado para avanzar con el Paso 2!
+
+================================================================================
+ARCHIVO: .\Documentación\Resumen de comandos iniciales.txt
+================================================================================
+
+PS C:\Proyecto32\backend-premium-api(2)> py -3.11 -m venv .venv
+PS C:\Proyecto32\backend-premium-api(2)> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+PS C:\Proyecto32\backend-premium-api(2)> .venv\Scripts\activate
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python --version
+Python 3.11.9
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python -m pip install --upgrade pip
+Requirement already satisfied: pip in c:\proyecto32\backend-premium-api(2)\.venv\lib\site-packages (24.0)
+Collecting pip
+  Using cached pip-26.3-py3-none-any.whl.metadata (4.6 kB)
+Using cached pip-26.3-py3-none-any.whl (2.0 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+ERROR: Operation cancelled by user
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> pip --version
+pip 26.2.2 from C:\Users\Nicolás\AppData\Local\Python\pythoncore-3.15-64\Lib\site-packages\pip (python 3.15)
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python -m pip install --upgrade pip --no-cache-dir
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+Requirement already satisfied: pip in .\.venv\Lib\site-packages (26.3)
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> docker run --name postgres-db-v2 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=backend_db_v2 -p 5433:5432 -d postgres:15
+f785d5d37362d3a376af9f50f0f52dadaeac55aa8b773e914d7d90ba1effc62d
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+f785d5d37362   postgres:15   "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp   postgres-db-v2
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> 

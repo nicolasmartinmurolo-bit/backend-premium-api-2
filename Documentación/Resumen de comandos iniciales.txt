@@ -1,0 +1,29 @@
+PS C:\Proyecto32\backend-premium-api(2)> py -3.11 -m venv .venv
+PS C:\Proyecto32\backend-premium-api(2)> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+PS C:\Proyecto32\backend-premium-api(2)> .venv\Scripts\activate
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python --version
+Python 3.11.9
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python -m pip install --upgrade pip
+Requirement already satisfied: pip in c:\proyecto32\backend-premium-api(2)\.venv\lib\site-packages (24.0)
+Collecting pip
+  Using cached pip-26.3-py3-none-any.whl.metadata (4.6 kB)
+Using cached pip-26.3-py3-none-any.whl (2.0 MB)
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 24.0
+    Uninstalling pip-24.0:
+      Successfully uninstalled pip-24.0
+ERROR: Operation cancelled by user
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> pip --version
+pip 26.2.2 from C:\Users\Nicolás\AppData\Local\Python\pythoncore-3.15-64\Lib\site-packages\pip (python 3.15)
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> python -m pip install --upgrade pip --no-cache-dir
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+Requirement already satisfied: pip in .\.venv\Lib\site-packages (26.3)
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+WARNING: Ignoring incompletely removed distribution ~ip-24.0.dist-info (C:\Proyecto32\backend-premium-api(2)\.venv\Lib\site-packages); '~'-prefixed leftover directories are the result of a previous incomplete installation, and can be deleted
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> docker run --name postgres-db-v2 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=backend_db_v2 -p 5433:5432 -d postgres:15
+f785d5d37362d3a376af9f50f0f52dadaeac55aa8b773e914d7d90ba1effc62d
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+f785d5d37362   postgres:15   "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes   0.0.0.0:5433->5432/tcp, [::]:5433->5432/tcp   postgres-db-v2
+(.venv) PS C:\Proyecto32\backend-premium-api(2)> 
