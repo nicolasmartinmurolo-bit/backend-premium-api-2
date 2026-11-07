@@ -6,7 +6,7 @@
 from fastapi import status
 from jose import jwt
 from app.core.config import settings
-
+from app.core.database import get_db
 
 def test_read_root(client):
     """Test application liveness root endpoint."""
@@ -180,3 +180,15 @@ def test_superuser_permissions_forbidden(client):
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert "privileges" in response.json()["detail"]
+
+
+def test_get_db_generator():
+    """Test direct execution of get_db dependency generator."""
+    db_gen = get_db()
+    session = next(db_gen)
+    assert session is not None
+    # Forzar el cierre del generador para cubrir el bloque finally
+    try:
+        next(db_gen)
+    except StopIteration:
+        pass
